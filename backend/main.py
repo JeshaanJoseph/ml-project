@@ -5,10 +5,13 @@ import joblib
 import pandas as pd
 
 app = FastAPI()
+
+# Load models
 classifier = joblib.load("models/loan_classifier.pkl")
 scaler = joblib.load("models/scaler.pkl")
 regressor = joblib.load("models/loan_regressor.pkl")
 
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -17,12 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
-@app.get("/")
-def home():
-    return {"message": "API running"}
-
+# Input schema
 class LoanApprovalInput(BaseModel):
     age: float
     income: float
@@ -35,10 +33,14 @@ class LoanApprovalInput(BaseModel):
     payment_default_on_file: int
     credit_history_length: float
 
-@app.post("/predict-approval")
-def predict_approval(data: LoanApprovalInput):
 
-    df = pd.DataFrame([[
+@app.get("/")
+def home():
+    return {"message": "API running"}
+
+
+def create_dataframe(data: LoanApprovalInput):
+    return pd.DataFrame([[
         data.age,
         data.income,
         data.home_ownership,
@@ -50,54 +52,32 @@ def predict_approval(data: LoanApprovalInput):
         data.payment_default_on_file,
         data.credit_history_length
     ]], columns=[
-        'age',
-        'income',
-        'home_ownership',
-        'emplyment_length',
-        'loan_intent',
-        'loan_amount',
-        'loan_interest_rate',
-        'loan_income_ratio',
-        'payment_default_on_file',
-        'credit_history_length'
+        "age",
+        "income",
+        "home_ownership",
+        "emplyment_length",
+        "loan_intent",
+        "loan_amount",
+        "loan_interest_rate",
+        "loan_income_ratio",
+        "payment_default_on_file",
+        "credit_history_length"
     ])
 
-    scaled = scaler.transform(df)
 
-    prediction = classifier.predict(scaled)
+@app.post("/predict")
+def predict(data: LoanApprovalInput):
 
-    return {
-        "approved": int(prediction[0])
-    }
-@app.post("/predict-loan-amount")
-def predict_loan_amount(data: LoanApprovalInput):
+    df = create_dataframe(data)
 
-    df = pd.DataFrame([[
-        data.age,
-        data.income,
-        data.home_ownership,
-        data.emplyment_length,
-        data.loan_intent,
-        data.loan_amount,
-        data.loan_interest_rate,
-        data.loan_income_ratio,
-        data.payment_default_on_file,
-        data.credit_history_length
-    ]], columns=[
-        'age',
-        'income',
-        'home_ownership',
-        'emplyment_length',
-        'loan_intent',
-        'loan_amount',
-        'loan_interest_rate',
-        'loan_income_ratio',
-        'payment_default_on_file',
-        'credit_history_length'
-    ])
+    # Classification
+    scaled_df = scaler.transform(df)
+    approval_prediction = classifier.predict(scaled_df)[0]
 
-    prediction = regressor.predict(df)
+    # Regression
+    amount_prediction = regressor.predict(df)[0]
 
     return {
-        "max_loan_amount": round(float(prediction[0]), 2)
+        "loan_status": "Approved" if approval_prediction == 0 else "Rejected",
+        "max_loan_amount": round(float(amount_prediction), 2)
     }
