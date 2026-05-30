@@ -7,6 +7,7 @@ import pandas as pd
 app = FastAPI()
 classifier = joblib.load("models/loan_classifier.pkl")
 scaler = joblib.load("models/scaler.pkl")
+regressor = joblib.load("models/loan_regressor.pkl")
 
 app.add_middleware(
     CORSMiddleware,
@@ -82,4 +83,36 @@ def predict_approval(data: LoanApprovalInput):
 
     return {
         "approved": int(prediction[0])
+    }
+@app.post("/predict-loan-amount")
+def predict_loan_amount(data: LoanApprovalInput):
+
+    df = pd.DataFrame([[
+        data.age,
+        data.income,
+        data.home_ownership,
+        data.emplyment_length,
+        data.loan_intent,
+        data.loan_amount,
+        data.loan_interest_rate,
+        data.loan_income_ratio,
+        data.payment_default_on_file,
+        data.credit_history_length
+    ]], columns=[
+        'age',
+        'income',
+        'home_ownership',
+        'emplyment_length',
+        'loan_intent',
+        'loan_amount',
+        'loan_interest_rate',
+        'loan_income_ratio',
+        'payment_default_on_file',
+        'credit_history_length'
+    ])
+
+    prediction = regressor.predict(df)
+
+    return {
+        "max_loan_amount": round(float(prediction[0]), 2)
     }
