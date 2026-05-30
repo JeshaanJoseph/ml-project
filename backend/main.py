@@ -17,27 +17,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# input schema
-class InputData(BaseModel):
-    income: float
-    age: int
+
 
 @app.get("/")
 def home():
     return {"message": "API running"}
 
-# prediction endpoint
-@app.post("/predict")
-def predict(data: InputData):
-
-    if data.income > 50000 and data.age > 21:
-        prediction = "Approved"
-    else:
-        prediction = "Rejected"
-
-    return {
-        "prediction": prediction
-    }
 class LoanApprovalInput(BaseModel):
     age: float
     income: float
