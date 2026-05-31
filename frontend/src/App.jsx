@@ -20,6 +20,12 @@ function App() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const clearResults = () => {
+          setResult("");
+          setMaxLoanAmount("");
+          setError("");
+        };
+
   const handleSubmit = async () => {
     if (
       !age ||
@@ -46,6 +52,7 @@ function App() {
       creditHistoryLength < 0 || creditHistoryLength > 80
 ) {
   setError("Please enter valid values.");
+  setLoading(false);
   return;
 }
 
@@ -82,52 +89,71 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Loan Approval Prediction System</h1>
+      <h1 >Loan Approval Prediction System</h1>
 
       <h2 className="section-title">Personal Information</h2>
+      <div className="form-grid">
 
+    <div className="field">
+    <label >Age</label>
       <input
         type="number"
         min="18"
         max="100"
-        placeholder="Age"
+       placeholder="Age"
         value={age}
-        onChange={(e) => setAge(e.target.value)}
+        onChange={(e) => {setAge(e.target.value);
+        clearResults();}}
       />
-
+      </div>
+    <div className="field">
+    <label >Income</label>
       <input
         type="number"
         min="1"
         max="100000000"
         placeholder="Income"
         value={income}
-        onChange={(e) => setIncome(e.target.value)}
+        onChange={(e) => {setIncome(e.target.value);
+        clearResults();}}
       />
+      </div>
+         <div className="field">
+        <label >Home Ownership</label>
 
       <select
         value={homeOwnership}
-        onChange={(e) => setHomeOwnership(e.target.value)}
+        onChange={(e) => {setHomeOwnership(e.target.value);
+        clearResults();}}
       >
         <option value="0">Mortgage</option>
         <option value="1">Other</option>
         <option value="2">Own</option>
         <option value="3">Rent</option>
-      </select>
-
+      </select> </div>
+       <div className="field">
+        <label >Employment Length</label>
       <input
         type="number"
         min="0"
         max="60"
         placeholder="Employment Length"
         value={employmentLength}
-        onChange={(e) => setEmploymentLength(e.target.value)}
+        onChange={(e) => {setEmploymentLength(e.target.value);
+        clearResults();}}
       />
+     </div>
+     </div>
+     <h2 className="section-title">Loan Information</h2>
+    <div className="form-grid">
 
-      <h2 className="section-title">Loan Information</h2>
-
+      
+       <div className="field">
+        <label >Loan Purpose</label>
       <select
         value={loanIntent}
-        onChange={(e) => setLoanIntent(e.target.value)}
+        onChange={(e) => {setLoanIntent(e.target.value);
+        clearResults();}}
       >
         <option value="0">Debt Consolidation</option>
         <option value="1">Education</option>
@@ -136,16 +162,21 @@ function App() {
         <option value="4">Personal</option>
         <option value="5">Venture</option>
       </select>
-
+      </div>
+    <div className="field">
+        <label >Loan Amount</label>
       <input
         type="number"
         min="1"
         max="100000000"
         placeholder="Loan Amount"
         value={loanAmount}
-        onChange={(e) => setLoanAmount(e.target.value)}
+        onChange={(e) => {setLoanAmount(e.target.value);
+        clearResults();}}
       />
-
+      </div>
+    <div className="field">
+        <label >Interest Rate</label>
       <input
         type="number"
         min="0"
@@ -153,9 +184,12 @@ function App() {
         step="0.01"
         placeholder="Interest Rate"
         value={loanInterestRate}
-        onChange={(e) => setLoanInterestRate(e.target.value)}
+        onChange={(e) => {setLoanInterestRate(e.target.value);
+        clearResults();}}
       />
-
+      </div>
+      <div className="field">
+        <label >Loan Income Ratio</label>
       <input
         type="number"
         min="0"
@@ -163,27 +197,39 @@ function App() {
         step="0.01"
         placeholder="Loan Income Ratio"
         value={loanIncomeRatio}
-        onChange={(e) => setLoanIncomeRatio(e.target.value)}
+        onChange={(e) => {setLoanIncomeRatio(e.target.value);
+        clearResults();}}
       />
+      </div>
+    </div>
+    <h2 className="section-title">Credit Information</h2>
+    <div className="form-grid">
 
-      <h2 className="section-title">Credit Information</h2>
-
+      
+    <div className="field">
+        <label >Payment Default</label>
       <select
         value={paymentDefault}
-        onChange={(e) => setPaymentDefault(e.target.value)}
+        onChange={(e) => {setPaymentDefault(e.target.value);
+        clearResults();}}
       >
         <option value="0">No Previous Default</option>
         <option value="1">Previous Default</option>
       </select>
-
+      </div>
+    <div className="field">
+        <label >Credit History Length</label>
       <input
         type="number"
         min="0"
         max="80"
         placeholder="Credit History Length"
         value={creditHistoryLength}
-        onChange={(e) => setCreditHistoryLength(e.target.value)}
+        onChange={(e) => {setCreditHistoryLength(e.target.value);
+        clearResults();}}
       />
+      </div>
+      </div>
 
       {error && <p className="error">{error}</p>}
 
@@ -205,10 +251,15 @@ function App() {
             <h2>
               Maximum Loan Amount:
               {" "}
-              Rs. {Number(maxLoanAmount).toLocaleString()}
+              Rs. {Number(maxLoanAmount).toLocaleString(undefined,
+               {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+               })
+               }
             </h2>
           </>
-        )}
+        )}  
       </div>
     </div>
   );
