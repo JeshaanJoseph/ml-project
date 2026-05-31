@@ -25,6 +25,23 @@ function App() {
           setMaxLoanAmount("");
           setError("");
         };
+  const handleReset = () => {
+          setAge("");
+          setIncome("");
+          setEmploymentLength("");
+          setLoanAmount("");
+          setLoanInterestRate("");
+          setLoanIncomeRatio("");
+          setCreditHistoryLength("");
+
+          setHomeOwnership("2");
+          setLoanIntent("1");
+          setPaymentDefault("0");
+
+          setResult("");
+          setMaxLoanAmount("");
+          setError("");
+};
 
   const handleSubmit = async () => {
     if (
@@ -232,10 +249,18 @@ function App() {
       </div>
 
       {error && <p className="error">{error}</p>}
-
+      <div className="button-group">
       <button onClick={handleSubmit} disabled={loading}>
         {loading ? "Predicting..." : "Predict"}
       </button>
+        <button
+        type="button"
+        className="reset-btn"
+        onClick={handleReset}
+        >
+          Reset
+        </button>
+        </div>
 
       <div className="result">
         {result && (
