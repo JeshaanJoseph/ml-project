@@ -36,6 +36,18 @@ function App() {
 
     setError("");
     setLoading(true);
+    if (
+      age < 18 || age > 100 ||
+      income <= 0 ||
+      employmentLength < 0 || employmentLength > 60 ||
+      loanAmount <= 0 ||
+      loanInterestRate < 0 || loanInterestRate > 100 ||
+      loanIncomeRatio < 0 || loanIncomeRatio > 20 ||
+      creditHistoryLength < 0 || creditHistoryLength > 80
+) {
+  setError("Please enter valid values.");
+  return;
+}
 
     try {
       const response = await fetch("http://127.0.0.1:8000/predict", {
@@ -76,6 +88,8 @@ function App() {
 
       <input
         type="number"
+        min="18"
+        max="100"
         placeholder="Age"
         value={age}
         onChange={(e) => setAge(e.target.value)}
@@ -83,6 +97,8 @@ function App() {
 
       <input
         type="number"
+        min="1"
+        max="100000000"
         placeholder="Income"
         value={income}
         onChange={(e) => setIncome(e.target.value)}
@@ -100,6 +116,8 @@ function App() {
 
       <input
         type="number"
+        min="0"
+        max="60"
         placeholder="Employment Length"
         value={employmentLength}
         onChange={(e) => setEmploymentLength(e.target.value)}
@@ -121,6 +139,8 @@ function App() {
 
       <input
         type="number"
+        min="1"
+        max="100000000"
         placeholder="Loan Amount"
         value={loanAmount}
         onChange={(e) => setLoanAmount(e.target.value)}
@@ -128,6 +148,8 @@ function App() {
 
       <input
         type="number"
+        min="0"
+        max="100"
         step="0.01"
         placeholder="Interest Rate"
         value={loanInterestRate}
@@ -136,6 +158,8 @@ function App() {
 
       <input
         type="number"
+        min="0"
+        max="20"
         step="0.01"
         placeholder="Loan Income Ratio"
         value={loanIncomeRatio}
@@ -154,6 +178,8 @@ function App() {
 
       <input
         type="number"
+        min="0"
+        max="80"
         placeholder="Credit History Length"
         value={creditHistoryLength}
         onChange={(e) => setCreditHistoryLength(e.target.value)}
