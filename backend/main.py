@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from fastapi.middleware.cors import CORSMiddleware
 import joblib
 import pandas as pd
@@ -22,16 +22,16 @@ app.add_middleware(
 
 # Input schema
 class LoanApprovalInput(BaseModel):
-    age: float
-    income: float
+    age: float = Field(..., ge=18, le=100)
+    income: float = Field(..., gt=0)
     home_ownership: int
-    emplyment_length: float
+    emplyment_length: float = Field(..., ge=0, le=60)
     loan_intent: int
-    loan_amount: float
-    loan_interest_rate: float
-    loan_income_ratio: float
+    loan_amount: float = Field(..., gt=0)
+    loan_interest_rate: float = Field(..., ge=0, le=100)
+    loan_income_ratio: float = Field(..., ge=0, le=20)
     payment_default_on_file: int
-    credit_history_length: float
+    credit_history_length: float = Field(..., ge=0, le=80)
 
 
 @app.get("/")
