@@ -1,3 +1,4 @@
+import "./App.css";
 import { useState } from "react";
 
 function App() {
@@ -16,35 +17,62 @@ function App() {
   const [result, setResult] = useState("");
   const [maxLoanAmount, setMaxLoanAmount] = useState("");
 
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async () => {
-    const response = await fetch("http://127.0.0.1:8000/predict", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        age: Number(age),
-        income: Number(income),
-        home_ownership: Number(homeOwnership),
-        emplyment_length: Number(employmentLength),
-        loan_intent: Number(loanIntent),
-        loan_amount: Number(loanAmount),
-        loan_interest_rate: Number(loanInterestRate),
-        loan_income_ratio: Number(loanIncomeRatio),
-        payment_default_on_file: Number(paymentDefault),
-        credit_history_length: Number(creditHistoryLength),
-      }),
-    });
+    if (
+      !age ||
+      !income ||
+      !employmentLength ||
+      !loanAmount ||
+      !loanInterestRate ||
+      !loanIncomeRatio ||
+      !creditHistoryLength
+    ) {
+      setError("Please fill in all required fields.");
+      return;
+    }
 
-    const data = await response.json();
+    setError("");
+    setLoading(true);
 
-    setResult(data.loan_status);
-    setMaxLoanAmount(data.max_loan_amount);
+    try {
+      const response = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          age: Number(age),
+          income: Number(income),
+          home_ownership: Number(homeOwnership),
+          emplyment_length: Number(employmentLength),
+          loan_intent: Number(loanIntent),
+          loan_amount: Number(loanAmount),
+          loan_interest_rate: Number(loanInterestRate),
+          loan_income_ratio: Number(loanIncomeRatio),
+          payment_default_on_file: Number(paymentDefault),
+          credit_history_length: Number(creditHistoryLength),
+        }),
+      });
+
+      const data = await response.json();
+
+      setResult(data.loan_status);
+      setMaxLoanAmount(data.max_loan_amount);
+    } catch (err) {
+      setError("Unable to connect to the prediction server.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div>
+    <div className="container">
       <h1>Loan Approval Prediction System</h1>
+
+      <h2 className="section-title">Personal Information</h2>
 
       <input
         type="number"
@@ -53,16 +81,12 @@ function App() {
         onChange={(e) => setAge(e.target.value)}
       />
 
-      <br /><br />
-
       <input
         type="number"
         placeholder="Income"
         value={income}
         onChange={(e) => setIncome(e.target.value)}
       />
-
-      <br /><br />
 
       <select
         value={homeOwnership}
@@ -74,8 +98,6 @@ function App() {
         <option value="3">Rent</option>
       </select>
 
-      <br /><br />
-
       <input
         type="number"
         placeholder="Employment Length"
@@ -83,7 +105,7 @@ function App() {
         onChange={(e) => setEmploymentLength(e.target.value)}
       />
 
-      <br /><br />
+      <h2 className="section-title">Loan Information</h2>
 
       <select
         value={loanIntent}
@@ -97,16 +119,12 @@ function App() {
         <option value="5">Venture</option>
       </select>
 
-      <br /><br />
-
       <input
         type="number"
         placeholder="Loan Amount"
         value={loanAmount}
         onChange={(e) => setLoanAmount(e.target.value)}
       />
-
-      <br /><br />
 
       <input
         type="number"
@@ -116,8 +134,6 @@ function App() {
         onChange={(e) => setLoanInterestRate(e.target.value)}
       />
 
-      <br /><br />
-
       <input
         type="number"
         step="0.01"
@@ -126,7 +142,7 @@ function App() {
         onChange={(e) => setLoanIncomeRatio(e.target.value)}
       />
 
-      <br /><br />
+      <h2 className="section-title">Credit Information</h2>
 
       <select
         value={paymentDefault}
@@ -136,8 +152,6 @@ function App() {
         <option value="1">Previous Default</option>
       </select>
 
-      <br /><br />
-
       <input
         type="number"
         placeholder="Credit History Length"
@@ -145,21 +159,31 @@ function App() {
         onChange={(e) => setCreditHistoryLength(e.target.value)}
       />
 
-      <br /><br />
+      {error && <p className="error">{error}</p>}
 
-      <button onClick={handleSubmit}>
-        Predict
+      <button onClick={handleSubmit} disabled={loading}>
+        {loading ? "Predicting..." : "Predict"}
       </button>
 
-      <hr />
+      <div className="result">
+        {result && (
+          <>
+            <h2
+              style={{
+                color: result === "Approved" ? "green" : "red",
+              }}
+            >
+              Loan Status: {result}
+            </h2>
 
-      <h2>Loan Status: {result}</h2>
-
-      <h2>
-        Maximum Loan Amount:
-        {maxLoanAmount &&
-          ` Rs. ${Number(maxLoanAmount).toLocaleString()}`}
-      </h2>
+            <h2>
+              Maximum Loan Amount:
+              {" "}
+              Rs. {Number(maxLoanAmount).toLocaleString()}
+            </h2>
+          </>
+        )}
+      </div>
     </div>
   );
 }
