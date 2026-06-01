@@ -111,12 +111,15 @@ button:disabled {
 .button-group button {
   flex: 1;
 }
-.result-approved {
+.result-approved .status,
+.result-approved .amount,
+.result-approved p {
     color: #16a34a;
  
 }
-
-.result-rejected {
+.result-rejected .status,
+.result-rejected .amount ,
+.result-rejected p {
  
   color:#dc2626
 }
