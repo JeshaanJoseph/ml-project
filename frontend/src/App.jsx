@@ -108,7 +108,7 @@ function App() {
     <div className="container">
       <h1 >Loan Approval Prediction System</h1>
 
-      <h2 className="section-title">Personal Information</h2>
+      <h2 className="section-title">👤Personal Information</h2>
       <div className="form-grid">
 
     <div className="field">
@@ -161,7 +161,7 @@ function App() {
       />
      </div>
      </div>
-     <h2 className="section-title">Loan Information</h2>
+     <h2 className="section-title">💰 Loan Information</h2>
     <div className="form-grid">
 
       
@@ -219,7 +219,7 @@ function App() {
       />
       </div>
     </div>
-    <h2 className="section-title">Credit Information</h2>
+    <h2 className="section-title">📊 Credit Information</h2>
     <div className="form-grid">
 
       
@@ -262,30 +262,34 @@ function App() {
         </button>
         </div>
 
-      <div className="result">
-        {result && (
-          <>
-            <h2
-              style={{
-                color: result === "Approved" ? "green" : "red",
-              }}
-            >
-              Loan Status: {result}
-            </h2>
+  {result && (
+  <div
+    className={`result ${
+      result === "Approved"
+        ? "result-approved"
+        : "result-rejected"
+    }`}
+  >
+    <h2 className="status">
+      {result === "Approved"
+        ? "✅ Loan Approved"
+        : "❌ Loan Rejected"}
+    </h2>
 
-            <h2>
-              Maximum Loan Amount:
-              {" "}
-              Rs. {Number(maxLoanAmount).toLocaleString(undefined,
-               {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-               })
-               }
-            </h2>
-          </>
-        )}  
-      </div>
+    <p>Maximum Eligible Loan Amount</p>
+
+    <div className="amount">
+      Rs.{" "}
+      {Number(maxLoanAmount).toLocaleString(
+        undefined,
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }
+      )}
+    </div>
+  </div>
+)}
     </div>
   );
 }
