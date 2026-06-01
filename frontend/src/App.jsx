@@ -58,7 +58,7 @@ function App() {
     }
 
     setError("");
-    setLoading(true);
+    
     if (
       age < 18 || age > 100 ||
       income <= 0 ||
@@ -67,7 +67,7 @@ function App() {
       loanInterestRate < 0 || loanInterestRate > 100 ||
       loanIncomeRatio < 0 || loanIncomeRatio > 20 ||
       creditHistoryLength < 0 || creditHistoryLength > 80
-) {
+)setLoading(true); {
   setError("Please enter valid values.");
   setLoading(false);
   return;
