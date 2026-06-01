@@ -257,7 +257,12 @@ function App() {
       {error && <p className="error">{error}</p>}
       <div className="button-group">
       <button onClick={handleSubmit} disabled={loading}>
-        {loading ? "Predicting..." : "Predict"}
+        {loading ?  (
+    <>
+      <span className="spinner"></span>
+      Predicting...
+    </>
+  ) :("Predict")}
       </button>
         <button
         type="button"
