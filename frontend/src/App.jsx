@@ -95,8 +95,14 @@ function App() {
 
       const data = await response.json();
 
-      setResult(data.loan_status);
       setMaxLoanAmount(data.max_loan_amount);
+
+      const approved =
+        Number(loanAmount) <= Number(data.max_loan_amount);
+
+      setResult(
+        approved ? "Approved" : "Rejected"
+      );
     } catch (err) {
       setError("Unable to connect to the prediction server.");
     } finally {
