@@ -7,8 +7,6 @@ import pandas as pd
 app = FastAPI()
 
 # Load models
-classifier = joblib.load("models/loan_classifier.pkl")
-scaler = joblib.load("models/scaler.pkl")
 regressor = joblib.load("models/loan_regressor.pkl")
 
 # CORS
@@ -70,14 +68,10 @@ def predict(data: LoanApprovalInput):
 
     df = create_dataframe(data)
 
-    # Classification
-    scaled_df = scaler.transform(df)
-    approval_prediction = classifier.predict(scaled_df)[0]
 
     # Regression
     amount_prediction = regressor.predict(df)[0]
 
     return {
-        "loan_status": "Approved" if approval_prediction == 0 else "Rejected",
         "max_loan_amount": round(float(amount_prediction), 2)
     }
