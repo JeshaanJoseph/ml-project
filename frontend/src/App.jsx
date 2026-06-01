@@ -67,11 +67,11 @@ function App() {
       loanInterestRate < 0 || loanInterestRate > 100 ||
       loanIncomeRatio < 0 || loanIncomeRatio > 20 ||
       creditHistoryLength < 0 || creditHistoryLength > 80
-)setLoading(true); {
+) {
   setError("Please enter valid values.");
   setLoading(false);
   return;
-}
+}setLoading(true);
 
     try {
       const response = await fetch("http://127.0.0.1:8000/predict", {
