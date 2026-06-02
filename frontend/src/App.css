@@ -154,6 +154,9 @@ button:disabled {
   h1 {
     font-size: 1.8rem;
   }
+  .amount {
+    font-size: 2rem;
+  }
 }
 .spinner {
   width: 14px;
