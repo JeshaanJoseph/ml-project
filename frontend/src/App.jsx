@@ -286,6 +286,19 @@ function App() {
         ? "✅ Loan Approved"
         : "❌ Loan Rejected"}
     </h2>
+      <p>
+      Requested Amount: Rs.{" "}
+      {Number(loanAmount).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}
+    </p>
+
+    <p>
+      {result === "Approved"
+        ? "Requested amount is within the eligible limit."
+        : "Requested amount exceeds the eligible limit."}
+    </p>
 
     <p>Maximum Eligible Loan Amount</p>
 
