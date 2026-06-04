@@ -20,6 +20,8 @@ function App() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const[history,setHistory]=useState([]);
+  
+  const [showResultModal, setShowResultModal] = useState(false);
 
 
   useEffect(() => {
@@ -33,6 +35,7 @@ function App() {
           setResult("");
           setMaxLoanAmount("");
           setError("");
+          setShowResultModal(false);
         };
   const handleReset = () => {
           setAge("");
@@ -50,6 +53,7 @@ function App() {
           setResult("");
           setMaxLoanAmount("");
           setError("");
+          setShowResultModal(false);
           
           
 };
@@ -114,6 +118,7 @@ function App() {
       setResult(
         approved ? "Approved" : "Rejected"
       );
+      setShowResultModal(true);
       const prediction = {
         status: approved ? "Approved" : "Rejected",
         requestedAmount: loanAmount,
@@ -300,47 +305,59 @@ function App() {
         </button>
         </div>
 
-  {result && (
-  <div
-    className={`result ${
-      result === "Approved"
-        ? "result-approved"
-        : "result-rejected"
-    }`}
-  >
-    <h2 className="status">
-      {result === "Approved"
-        ? "✅ Loan Approved"
-        : "❌ Loan Rejected"}
-    </h2>
+  
+    {showResultModal && (
+  <div className="modal-overlay">
+    <div
+      className={`modal-content ${
+        result === "Approved"
+          ? "result-approved"
+          : "result-rejected"
+      }`}
+    >
+      <h2 className="status">
+        {result === "Approved"
+          ? "✅ Loan Approved"
+          : "❌ Loan Rejected"}
+      </h2>
+
       <p>
-      Requested Amount: Rs.{" "}
-      {Number(loanAmount).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}
-    </p>
-
-    <p>
-      {result === "Approved"
-        ? "Requested amount is within the eligible limit."
-        : "Requested amount exceeds the eligible limit."}
-    </p>
-
-    <p>Maximum Eligible Loan Amount</p>
-
-    <div className="amount">
-      Rs.{" "}
-      {Number(maxLoanAmount).toLocaleString(
-        undefined,
-        {
+        Requested Amount: Rs.{" "}
+        {Number(loanAmount).toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
-        }
-      )}
+        })}
+      </p>
+
+      <p>
+        {result === "Approved"
+          ? "Requested amount is within the eligible limit."
+          : "Requested amount exceeds the eligible limit."}
+      </p>
+
+      <p>Maximum Eligible Loan Amount</p>
+
+      <div className="amount">
+        Rs.{" "}
+        {Number(maxLoanAmount).toLocaleString(
+          undefined,
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }
+        )}
+      </div>
+
+      <button
+        className="close-btn"
+        onClick={() => setShowResultModal(false)}
+      >
+        Close
+      </button>
     </div>
   </div>
 )}
+  
     </div>
   );
 }
