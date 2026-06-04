@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 function App() {
   const [income, setIncome] = useState("");
@@ -19,7 +19,16 @@ function App() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const[history,setHistory]=useState([]);
 
+
+  useEffect(() => {
+  const savedHistory = localStorage.getItem("loanHistory");
+
+  if (savedHistory) {
+    setHistory(JSON.parse(savedHistory));
+  }
+}, []);
   const clearResults = () => {
           setResult("");
           setMaxLoanAmount("");
@@ -41,6 +50,8 @@ function App() {
           setResult("");
           setMaxLoanAmount("");
           setError("");
+          
+          
 };
 
   const handleSubmit = async () => {
@@ -103,6 +114,22 @@ function App() {
       setResult(
         approved ? "Approved" : "Rejected"
       );
+      const prediction = {
+        status: approved ? "Approved" : "Rejected",
+        requestedAmount: loanAmount,
+        eligibleAmount: data.max_loan_amount,
+        date: new Date().toLocaleString(),
+      };
+
+      const updatedHistory = [...history, prediction];
+
+      setHistory(updatedHistory);
+
+      localStorage.setItem(
+        "loanHistory",
+        JSON.stringify(updatedHistory)
+      );
+      
     } catch (err) {
       setError("Unable to connect to the prediction server.");
     } finally {
